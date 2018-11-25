@@ -1,0 +1,30 @@
+com.spring.study01:
+	我们的故事情节是这样的，一个骑士可以执行不同类型的探险任务，而且在探险的前后过程中，我们可以进行一些额外的处理。
+	
+	以下两点的实现均依赖于上面的故事情节。
+		1.一个简单的Spring DI。
+			DI能够让相互协作的软件组件保持松散耦合。
+			(1).自动化装配。
+			(2).基于Java的配置。
+			(3).基于XML的配置。
+			值得注意的是，Spring应用中可以同时使用这三种配置进行协作，并且不会冲突。
+		2.一个简单的Sping aop。
+			面向切面编程（aspect-oriented programming，AOP）允许你把遍布应用各处的功能分离出来形成可重用的组件
+			（1）.基于Java的配置。
+			（2）.基于XML的配置。
+			核心在于:切点，切面，通知
+		3.Spring的IOC容器（容纳你的Bean）
+			Spring容器负责创建对象，装配它们，配置它们并管理它们的整个生命周期，从生存到死亡。
+		4.Bean的生命周期。
+			1．Spring对bean进行实例化；
+			2．Spring将值和bean的引用注入到bean对应的属性中；
+			3．如果bean实现了BeanNameAware接口，Spring将bean的ID传递给setBean-Name()方法；
+			4．如果bean实现了BeanFactoryAware接口，Spring将调用setBeanFactory()方法，将BeanFactory容器实例传入；
+			5．如果bean实现了ApplicationContextAware接口，Spring将调用setApplicationContext()方法，将bean所在的应用上下文的引用传入进来；
+			6．如果bean实现了BeanPostProcessor接口，Spring将调用它们的postProcessBeforeInitialization()方法；
+			7．如果bean实现了InitializingBean接口，Spring将调用它们的afterPropertiesSet()方法。类似地，如果bean使用init-method声明了初始化方法，该方法也会被调用；
+			8．如果bean实现了BeanPostProcessor接口，Spring将调用它们的postProcessAfterInitialization()方法；
+			9．此时，bean已经准备就绪，可以被应用程序使用了，它们将一直驻留在应用上下文中，直到该应用上下文被销毁；
+			10．如果bean实现了DisposableBean接口，Spring将调用它的destroy()接口方法。同样，如果bean使用destroy-method声明了销毁方法，该方法也会被调用。
+			
+			总结:目前我认为的核心之处在于哪里呢？首先，Spring创建IOC容器，将我们的对象装入其中，通过应用上下文对其中的对象进行操作，java Bean对象会一直驻留在内存中，知道应用上下文被销毁。

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- Spring只会加载扫描到的第一个properties配置文件，所以我们这里直接加载所有的properties文件-->
+	<context:property-placeholder location="classpath:study04/dao.properties"/>	
+	
+	<bean id="knight" class="com.spring.study07.BraveKnight">
+		<constructor-arg ref="quest" />
+	</bean>
+
+	<bean id="quest" class="com.spring.study07.SlayDragonQuest">
+		<constructor-arg value="#{T(System).out}" />
+	</bean>
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="${dataSource.url}"></property>
+        <property name="user" value="${dataSource.username}"></property>
+        <property name="password" value="${dataSource.password}"></property>
+        <!-- 每60秒检查所有连接池中的空闲连接。Default: 0 -->
+        <property name="idleConnectionTestPeriod" value="60" />
+        <!-- 初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 --> 
+		<property name="initialPoolSize" value="5" />
+        <!-- 最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+        <property name="maxIdleTime" value="60" />
+		<!-- 连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize" value="10" />
+		<!-- 连接池中保留的最小连接数。 -->
+        <property name="minPoolSize" value="5" />
+        <!-- JDBC的标准参数，用以控制数据源内加载的PreparedStatements数量。但由于预缓存的statements 
+  		属于单个connection而不是整个连接池。所以设置这个参数需要考虑到多方面的因素。 
+  		如果maxStatements与maxStatementsPerConnection均为0，则缓存被关闭。Default: 0-->
+  		<property name="maxStatements" value="100" />
+		<!-- maxStatementsPerConnection定义了连接池内单个连接所拥有的最大缓存statements数。Default: 0  -->
+		<property name="maxStatementsPerConnection" value="3" />
+        <!-- 定义所有连接测试都执行的测试语句。在使用连接测试的情况下这个显著提高测试速度。注意： 
+  		测试的表必须在初始数据源的时候就存在。Default: null -->
+  		<property name="preferredTestQuery" value="select 1" />
+        <!-- 定义在从数据库获取新连接失败后重复尝试的次数。Default: 30-->
+		<property name="acquireRetryAttempts" value="3" />
+        <!-- 两次连接中间隔时间，单位毫秒。Default: 1000 -->
+        <property name="acquireRetryDelay" value="1000" />
+        <!-- 当连接池用完时客户端调用getConnection()后等待获取新连接的时间，超时后将抛出 
+  		SQLException,如设为0则无限期等待。单位毫秒。Default: 0 -->
+  		<property name="checkoutTimeout" value="30000" />
+    </bean>
+    
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 
+		事务采用全注解方式 
+		探索@Transactional注解： 
+		你可以指定传播、隔离级别、超时以及允许和不允许的异常。 
+		@Transactional注解的属性: 
+		propagation：指定事务定义中使用的传播 
+		isolation：设定事务的隔离级别 
+		timeout：指定事务的超市（秒） 
+		readOnly：指定事务的是否只读
+		noRollbackFor：目标方法可抛出的异常所构成的数组，但通知仍会提交事务 
+		
+		rollbackFor：异常所构成的数组，如果目标方法抛出了这些异常，通知就会回滚事务 
+
+		PROPAGATION_REQUIRED 支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。 
+	
+		PROPAGATION_SUPPORTS  支持当前事务，如果当前没有事务，就以非事务方式执行。 
+		
+		PROPAGATION_MANDATORY  支持当前事务，如果当前没有事务，就抛出异常。 
+		
+		PROPAGATION_REQUIRES_NEW 新建事务，如果当前存在事务，把当前事务挂起。 
+		
+		PROPAGATION_NOT_SUPPORTED 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。 
+		
+		PROPAGATION_NEVER  以非事务方式执行，如果当前存在事务，则抛出异常。 
+		
+		PROPAGATION_NESTED  如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则进行与PROPAGATION_REQUIRED类似的操作。 		
+
+	-->
+ 
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="embarkOnQuest" propagation="REQUIRED" read-only="false" 
+			           rollback-for="java.lang.Exception"/>
+		</tx:attributes>
+	</tx:advice>
+		
+	<!-- 事物处理 -->
+	<aop:config>
+		<aop:pointcut id="pc" expression="execution(* com.spring.study07..*(..))" />
+		<aop:advisor pointcut-ref="pc" advice-ref="txAdvice" />
+	</aop:config>
+	
+</beans>

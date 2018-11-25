@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/aop 
+      http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="knight" class="com.spring.study06.BraveKnight">
+		<constructor-arg ref="quest" />
+	</bean>
+
+	<bean id="quest" class="com.spring.study06.SlayDragonQuest">
+		<constructor-arg value="#{T(System).out}" />
+	</bean>
+	
+	<bean id="minstrel" class="com.spring.study01.Minstrel">
+		<constructor-arg value="#{T(System).out}" />
+	</bean>
+	
+	<bean id="log" class="com.spring.study06.Log">
+		<constructor-arg value="#{T(System).out}" />
+	</bean>
+
+	<!-- 第一个切面 :可以再<aop:config>中配置
+		1.是否再方法内部暴露代理expose-proxy="true".
+		2.是否启用cglib动态代理
+	-->
+	<aop:config expose-proxy="true" proxy-target-class="true">
+		<!-- 通知定义了切面是什么，以及它何时被使用。切点定义了切面何处被使用 -->
+		<!-- 切面是 -->
+		<aop:aspect ref="minstrel">
+			<!-- 切点 -->
+			<aop:pointcut id="embark" expression="execution(* *.embarkOnQuest(..))" />
+			<!-- 通知定义了切面是什么以及何时使用。 -->
+			<!-- 前置通知 -->
+			<aop:before pointcut-ref="embark" method="singBeforeQuest" />
+			<!-- 后置通知 -->
+			<aop:after pointcut-ref="embark" method="singAfterQuest" />
+		</aop:aspect>
+		
+		<aop:aspect ref="log">
+			<!-- 切点 -->
+			<aop:pointcut id="embark" expression="execution(* *.embarkOnQuest(..))" />
+			<!-- 通知定义了切面是什么以及何时使用。 -->
+			<!-- 前置通知 -->
+			<aop:before pointcut-ref="embark" method="recordLogBefore" />
+			<!-- 后置通知 -->
+			<aop:after pointcut-ref="embark" method="recordLogAfter" />
+		</aop:aspect>
+	</aop:config>
+	
+	<!-- 第二个切面 -->
+	<!-- 	
+		<aop:config>
+			通知定义了切面是什么，以及它何时被使用。切点定义了切面何处被使用
+			切面是
+			<aop:aspect ref="log">
+				切点
+				<aop:pointcut id="embark" expression="execution(* *.embarkOnQuest(..))" />
+				通知定义了切面是什么以及何时使用。
+				前置通知
+				<aop:before pointcut-ref="embark" method="recordLogBefore" />
+				后置通知
+				<aop:after pointcut-ref="embark" method="recordLogAfter" />
+			</aop:aspect>
+		</aop:config> 
+	-->
+	
+</beans>
