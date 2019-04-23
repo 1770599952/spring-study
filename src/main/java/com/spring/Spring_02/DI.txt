@@ -1,0 +1,43 @@
+com.spring.Spring_02:
+	我们是面向对象编程，其中很重要的一点就是对对象的管理。
+	
+	1.装配:
+		(1).自动化装配。
+				自动装配的歧义性。
+				如何我们为一个类自动注入一个属性，但是这个属性却有多个实现，这时就出现了自动装配的歧义性，Spring无法确定装配哪个类。
+				初步解决方案:
+					这时Spring在声明bean的时候，通过将其中一个可选的bean设置为首选（primary）bean能够避免自动装配时的歧义性。
+					当遇到歧义性的时候，Spring将会使用首选的bean，而不是其他可选的bean。实际上，你所声明就是“最喜欢”的bean。
+					缺点:设置首选bean的局限性在于@Primary无法将可选方案的范围限定到唯一一个无歧义性的选
+					项中。它只能标示一个优先的可选方案。当首选bean的数量超过一个时，我们并没有其他的方法进一步缩小可选范围。
+				进一步解决:继续使用更多的限定符来缩小选择范围
+					@Qualifier():参数为想要注入的bean的id。
+					缺点:这里的问题在于我们重构了类，将其重构为其它类名的话，bean的ID和默认的限定符会变为新的类名。
+					@Qualifier private CD cd;的注入就会失败。
+					这里的问题在于属性上所指定的限定符与要注入的bean的名称是紧耦合的。对类名称的任意改动都会导致限定符失效。
+				创建自定义的限定符:我们可以为bean设置自己的限定符，而不是依赖于将bean ID作为限定符。在这里所需要做的就是在bean声明上添加@Qualifier注解。
+				@Component	@Qualifier("lincd")	public class LinCD。这样的话，你就随意重构LinCD的类名。而不必担心会破坏自动装配。在注入的地方，只要引用lincd限定符就可以了
+					缺点:假如两个类同时拥有一个限定符，这时就会冲突.而且我们不能同时给一个类添加两个@Qualifier限定符。但是我们可以新建两个注解继承自@Qualifier，然后进行使用。
+				自定义限定符注解:使用@Qualifier注解来标注.
+					给一个组件添加多个自定义限定符注解，在使用时也同时使用这些注解，就可以有效的解决这个问题。
+		(2).基于Java的配置。
+		(3).基于XML的配置。
+		值得注意的是，Spring应用中可以同时使用这三种配置进行协作，并且不会冲突。
+
+	2.Spring对Bean作用域的管理。
+		单例（Singleton）：在整个应用中，只创建bean的一个实例。
+		原型（Prototype）：每次注入或者通过Spring应用上下文获取的时候，都会创建一个新的bean实例。
+		会话（Session）：在Web应用中，为每个会话创建一个bean实例。
+		请求（Rquest）：在Web应用中，为每个请求创建一个bean实例。
+		（1），xml中配置：<bean id="xx" class="****" scope="prototype">
+		（2）.基于java的配置:创建时使用@Scope注解(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+		
+	3.运行时值注入
+		（1）XML配置:<context:propertyplaceholder>(本质都是生成PropertySourcesPlaceholderConfigurer对象)
+		（2）基于Java的配置:PropertySourcesPlaceholderConfigurer
+				使用@PropertySource("classpath:/com/spring/study02/mood.properties")加载配置文件
+				estExpression.mood01
+		总结:我们可以使用文件的解析类来解析文件，然后通过Environment对象或者占位符${}进行取值
+		
+	4.Spring EL
+		

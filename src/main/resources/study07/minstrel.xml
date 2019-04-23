@@ -14,11 +14,11 @@
 	<!-- Spring只会加载扫描到的第一个properties配置文件，所以我们这里直接加载所有的properties文件-->
 	<context:property-placeholder location="classpath:study04/dao.properties"/>	
 	
-	<bean id="knight" class="com.spring.study07.BraveKnight">
+	<bean id="knight" class="com.spring.Spring_07.BraveKnight">
 		<constructor-arg ref="quest" />
 	</bean>
 
-	<bean id="quest" class="com.spring.study07.SlayDragonQuest">
+	<bean id="quest" class="com.spring.Spring_07.SlayDragonQuest">
 		<constructor-arg value="#{T(System).out}" />
 	</bean>
 	<!-- 配置数据源 -->
@@ -98,7 +98,7 @@
 		
 	<!-- 事物处理 -->
 	<aop:config>
-		<aop:pointcut id="pc" expression="execution(* com.spring.study07..*(..))" />
+		<aop:pointcut id="pc" expression="execution(* com.spring.Spring_07..*(..))" />
 		<aop:advisor pointcut-ref="pc" advice-ref="txAdvice" />
 	</aop:config>
 	

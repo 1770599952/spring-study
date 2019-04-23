@@ -7,15 +7,15 @@
 		http://www.springframework.org/schema/beans 
       http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="knight" class="com.spring.study01.BraveKnight">
+	<bean id="knight" class="com.spring.Spring_01.BraveKnight">
 		<constructor-arg ref="quest" />
 	</bean>
 
-	<bean id="quest" class="com.spring.study01.SlayDragonQuest">
+	<bean id="quest" class="com.spring.Spring_01.SlayDragonQuest">
 		<constructor-arg value="#{T(System).out}" />
 	</bean>
 	
-	<bean id="minstrel" class="com.spring.study01.Minstrel">
+	<bean id="minstrel" class="com.spring.Spring_01.Minstrel">
 		<constructor-arg value="#{T(System).out}" />
 	</bean>
 

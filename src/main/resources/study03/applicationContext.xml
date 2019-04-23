@@ -12,7 +12,7 @@
       http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
 	<!-- 扫描组件包 -->
-	<context:component-scan base-package="com.spring.study03" />
+	<context:component-scan base-package="com.spring.Spring_03" />
 	<!-- 启用注解式AOP -->
 	<aop:aspectj-autoproxy expose-proxy="true"/>
 

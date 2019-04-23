@@ -14,7 +14,7 @@
 	<!-- Spring只会加载扫描到的第一个properties配置文件，所以我们这里直接加载所有的properties文件-->
 	<context:property-placeholder location="classpath:study04/dao.properties"/>	
 	<!-- 扫描组件包 -->
-	<context:component-scan base-package="com.spring.study04" />
+	<context:component-scan base-package="com.spring.Spring_04" />
 	<!-- 启用注解式AOP -->
 	<aop:aspectj-autoproxy expose-proxy="true"/>
 	
@@ -59,7 +59,7 @@
     	<!-- 扫描mybatis核心配置文件 -->
     	<property name="configLocation" value="classpath:study04/mybatis.xml"/>
     	<!-- 扫描java bean，自动使用别名 -->
-    	<property name="typeAliasesPackage" value="com.spring.study04.bean"/>
+    	<property name="typeAliasesPackage" value="com.spring.Spring_04.bean"/>
     	<!-- 扫描mybatis的SQL配置文件 -->
     	<property name="mapperLocations" value="classpath:study04/mapper/*.xml"/>
     </bean>
@@ -67,7 +67,7 @@
     <!-- 扫描Dao接口包 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
     	<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-    	<property name="basePackage" value="com.spring.study04.dao"/>
+    	<property name="basePackage" value="com.spring.Spring_04.dao"/>
     </bean>
 
     <!-- 数据库的事务管理器配置 -->
@@ -85,7 +85,7 @@
 	
 	<!-- 事物处理 -->
 	<aop:config proxy-target-class="true">
-		<aop:pointcut id="pc" expression="execution(* com.spring.study04..*(..))" />
+		<aop:pointcut id="pc" expression="execution(* com.spring.Spring_04..*(..))" />
 		<aop:advisor pointcut-ref="pc" advice-ref="txAdvice" />
 	</aop:config> 
 
